@@ -1,0 +1,24 @@
+#AppHeader{
+    background: #f5f8fc;
+    padding: 0.5rem;
+}
+.RedBorder{
+    border: 1px solid red;
+}
+
+#ContentContainer{
+    margin: 2% 0;
+}
+
+#AppLogo{
+    height: 150px;
+    width: auto;
+}
+
+#SongSearch{
+    margin-top: 1%;
+}
+
+.BtnGroup > button {
+    margin-right: 1rem;
+}
