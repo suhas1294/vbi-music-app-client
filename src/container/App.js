@@ -79,16 +79,13 @@ class App extends Component {
   searchHandler = (query) => {
     if (query){
       this.setState({searchQuery: query});
-      let queryArray = query.split(" ");
         this.getSongs(this.state.albumIdMap, 1, Number.MAX_SAFE_INTEGER )
           .then(songs => {
-              debugger
-              let filteredSongs = songs.filter(song => song.title.split(" ").some(word => queryArray.includes(word)));
+              let filteredSongs = songs.filter(song => query.split(" ").some(word => song.title.includes(word)));
               filteredSongs.splice(10);
               return filteredSongs;
           })
           .then(searchResults => {
-            debugger
             this.setState({loading: false, allSongs: searchResults})
           })
           .catch(err => console.error(err));

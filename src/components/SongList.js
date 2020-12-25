@@ -2,7 +2,6 @@ import React from 'react';
 import SongCard from './SongCard';
 
 const SongList = (props) => {
-    // debugger
     if (props.songs){
         return props.songs.map(song => {
             return (<SongCard key={song.id} title={song.title} singer={song.singer} albumName={song.albumName} />);
