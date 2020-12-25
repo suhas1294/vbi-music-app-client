@@ -4,7 +4,15 @@ import SongCard from './SongCard';
 const SongList = (props) => {
     if (props.songs){
         return props.songs.map(song => {
-            return (<SongCard key={song.id} title={song.title} singer={song.singer} albumName={song.albumName} />);
+            return (<SongCard
+                    key={song.id} 
+                    songId={song.id}
+                    title={song.title} 
+                    singers={song.singers.join(", ")} 
+                    albumName={song.albumName}
+                    duration={song.duration}
+                    playlistMode={props.playlistMode}
+                    addBtnRequired={props.addBtnRequired} />);
         });
     }else{
         return (<h1>Loading...</h1>);

@@ -1,46 +1,74 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Grid, Typography, TextField, Button } from '@material-ui/core';
 import styles from './SongCard.module.css';
+import { connect } from 'react-redux';
+import * as actions from './../store/actions/index';
 
-const SongCard = (props) => {
-    return (
-        <Grid container justify="space-between" alignItems='center' id={styles.SongCard} >
-            <Grid container item xs={9} direction="column">
-                <Typography
-                    // className={styles.MenuItem}
-                    // data-goto='dept'
-                    // onClick={(event) => this.companyPageMenuHandler(event.target)}
-                    variant='subtitle1'>
-                    Title: {props.title}
-                </Typography>
-                <Typography
-                    // className={styles.MenuItem}
-                    // data-goto='dept'
-                    // onClick={(event) => this.companyPageMenuHandler(event.target)}
-                    variant='subtitle1'>
-                    singer: {props.singer}
-                </Typography>
-                <Typography
-                    // className={styles.MenuItem}
-                    // data-goto='dept'
-                    // onClick={(event) => this.companyPageMenuHandler(event.target)}
-                    variant='subtitle1'>
-                    album: {props.albumName}
-                </Typography>
-            </Grid>
-            <Grid item xs={3}>
-                <Grid item style={{textAlign: 'center'}}>
+class SongCard extends Component {
+    render() {
+        let data = {songId: this.props.songId, pid: this.props.currentPlaylistShown}
+        return (
+            <Grid container justify="space-between" alignItems='center' id={styles.SongCard} >
+                <Grid container item xs={9} direction="column">
                     <Typography
-                        // className={styles.MenuItem}
-                        // data-goto='dept'
-                        // onClick={(event) => this.companyPageMenuHandler(event.target)}
                         variant='subtitle1'>
-                        12:45
+                        Title: {this.props.title}
+                    </Typography>
+                    <Typography
+                        variant='subtitle1'>
+                        singer: {this.props.singers}
+                    </Typography>
+                    <Typography
+                        variant='subtitle1'>
+                        album: {this.props.albumName}
                     </Typography>
                 </Grid>
+                <Grid item xs={3}>
+                    <Grid item >
+                        <Typography
+                            variant='subtitle1'>
+                            {this.props.duration}
+                        </Typography>
+                    </Grid>
+                    {
+                        this.props.playlistMode ?
+                            <Button 
+                                color="primary"
+                                onClick={this.props.removeSongFromPlaylist.bind(this, data)} 
+                                variant="contained" >
+                            Remove
+                            </Button>
+                            :
+                            null
+                    }
+                    {
+                        this.props.addBtnRequired ?
+                            <Button 
+                                color="primary"
+                                onClick={this.props.addSongToPlaylist.bind(this, data)} 
+                                variant="contained" >
+                            Add Song
+                            </Button>
+                            :
+                            null
+                    }
+                </Grid>
             </Grid>
-        </Grid>
-    )
+        )
+    }
+
 }
 
-export default SongCard;
+const mapStateToProps = state => {
+    return {
+        currentPlaylistShown: state.currentPlaylistIdShown,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        removeSongFromPlaylist: (details) => dispatch(actions.removeFromPlaylist(details)),
+        addSongToPlaylist: (details) => dispatch(actions.addSongToPlaylist(details))
+    }
+}
+export default  connect(mapStateToProps, mapDispatchToProps)(SongCard);

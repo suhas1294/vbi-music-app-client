@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import styles from './App.module.css';
-import { Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Grid, Typography, Button } from '@material-ui/core';
 import AppLogo from './../static/images/app_logo.png';
-import SongList from './../components/SongList';
 import axios from 'axios';
 import Spinner from './../components/Spinner';
+import Playlist from './Playlist';
+import Cockpit from './Cockpit';
+import { getSongDetailsWithAlbum } from './../utils/DataHelper';
 
-const Playlist = React.lazy(() => import('./Playlist'));
+// const Playlist = React.lazy(() => import('./Playlist'));
 
 class App extends Component {
 
@@ -16,94 +18,70 @@ class App extends Component {
     perPage: 5,
     showAllSongs: true,
     allSongs: [],
-    albumIdMap: {},
-    searchQuery: "",
-    singers: ["SPB", "Rahman", "Sonu Nigam", "Argit Singh", "Vijay Bhaskar", "Yesudas", "Ariana Grande", "Snoop Dogg"]
+    searchQuery: ""
   }
 
   componentDidMount() {
-    this.loadContent();
-  }
-
-  loadContent = (currentPage = this.state.currentPage, perPage = this.state.perPage) => {
-    let albumIdNameMap = {};
-    this.getAlbumIdNameMap()
-      .then(albumIdMap => {
-        albumIdNameMap = albumIdMap ;
-        return this.getSongs(albumIdMap, currentPage, perPage);
-      })
-      .then(songs => {
-        this.setState({albumIdMap: albumIdNameMap, allSongs: songs, loading: false});
-      })
-      .catch(err => console.error("Unable to fetch Album Details, error details", err));
-  }
-
-  getAlbumIdNameMap = () => {
-    const albumUrl = `https://jsonplaceholder.typicode.com/albums`;
-    let albumIdMaplocal = {};
-    return axios
-    .get(albumUrl)
-    .then(result => {
-      result.data.map(album => albumIdMaplocal[album.id] = album['title'])
-      return albumIdMaplocal;
-    })
-    .catch(err => console.error("Error while fetching album, details", err));
-  }
-
-  getSongs = (albumIdMap, currentPage, perPage) => {
-    const songsUrl = `https://jsonplaceholder.typicode.com/photos?_page=${currentPage}&_limit=${perPage}`;
-    let songs = [];
-    return axios
-      .get(songsUrl)
-      .then(results => {
-        results.data.forEach(song => {
-          let random = Math.floor(Math.random() * this.state.singers.length);
-          songs.push({ ...song, albumName: albumIdMap[song.albumId]  , singer: this.state.singers[random]});
-        });
-        return songs;
-      })
-      .then(fetchedSongs => fetchedSongs)
-      .catch(err => console.error('Error while fetching songs, details:', err))
+    getSongDetailsWithAlbum()
+      .then(songs => this.setState({ loading: false, allSongs: songs }));
   }
 
   songNextPageHandler = () => {
-    this.setState({currentPage: this.state.currentPage+1});
-    this.loadContent();
+    getSongDetailsWithAlbum(this.state.currentPage + 1, 5)
+      .then(songs => this.setState({ loading: false, allSongs: songs, currentPage: this.state.currentPage + 1 }));
   }
 
   songPrevPageHandler = () => {
-    this.setState({currentPage: this.state.currentPage-1});
-    this.loadContent();
+    getSongDetailsWithAlbum(this.state.currentPage - 1, 5)
+      .then(songs => this.setState({ loading: false, allSongs: songs, currentPage: this.state.currentPage - 1 }));
   }
 
   searchHandler = (query) => {
-    if (query){
-      this.setState({searchQuery: query});
-        this.getSongs(this.state.albumIdMap, 1, Number.MAX_SAFE_INTEGER )
-          .then(songs => {
-              let filteredSongs = songs.filter(song => query.split(" ").some(word => song.title.includes(word)));
-              filteredSongs.splice(10);
-              return filteredSongs;
-          })
-          .then(searchResults => {
-            this.setState({loading: false, allSongs: searchResults})
-          })
-          .catch(err => console.error(err));
-    }else{
-      this.setState({searchQuery: ""});
-      this.loadContent();
+    if (query) {
+      this.setState({ searchQuery: query });
+      getSongDetailsWithAlbum(1, Number.MAX_SAFE_INTEGER)
+      .then(songs => {
+        let filteredSongs = songs.filter(song => query.split(" ").some(word => song.title.includes(word)));
+        filteredSongs.splice(10);
+        return filteredSongs;
+      })
+      .then(searchResults => {
+        this.setState({ loading: false, allSongs: searchResults })
+      })
+      .catch(err => console.error(err));
+    } else {
+      this.setState({ searchQuery: "" });
+      getSongDetailsWithAlbum()
+        .then(songs => this.setState({ loading: false, allSongs: songs }));
     }
+  }
+
+  playlistClickHandler = () => {
+    this.setState({ showAllSongs: false })
+  }
+
+  songsClickHandler = () => {
+    this.setState({ showAllSongs: true })
   }
 
   render() {
     let content = null;
     if (this.state.loading) content = <Spinner />;
-    if (this.state.allSongs.length > 0 & this.state.showAllSongs) content = <SongList songs={this.state.allSongs} /> ;
-    if (!this.state.showAllSongs){
+    if (this.state.allSongs.length > 0 & this.state.showAllSongs) {
+      content = <Cockpit
+        searchQuery={this.state.searchQuery}
+        onSearch={this.searchHandler}
+        songs={this.state.allSongs}
+        playlistMode={false}
+        addBtnRequired={false} />
+    }
+    if (!this.state.showAllSongs) content = <Playlist />;
+    if (!this.state.showAllSongs) {
       content = <Playlist data={this.state.allSongs} />
     }
+
     let prevBtn = null;
-    if(this.state.currentPage > 1){
+    if (this.state.currentPage > 1) {
       prevBtn = <Button color="primary" variant="contained" onClick={this.songPrevPageHandler} >Previous </Button>
     }
     return (
@@ -128,37 +106,13 @@ class App extends Component {
           <Grid item container xs={12}>
             <Grid item md={4}></Grid>
             <Grid container item xs={12} md={4} justify="center" className={styles.BtnGroup}>
-              <Button color="primary" variant="contained" >All Songs </Button>
-              <Button color="secondary" variant="contained" >Playlist </Button>
+              <Button color={this.state.showAllSongs ? 'primary' : 'default'} onClick={this.songsClickHandler} variant="contained" >All Songs </Button>
+              <Button color={this.state.showAllSongs ? 'default' : 'primary'} onClick={this.playlistClickHandler} variant="contained" >Playlist </Button>
             </Grid>
             <Grid item md={4}></Grid>
           </Grid>
 
-          {/* search field */}
-          <Grid item container xs={12}>
-            <Grid item md={3}></Grid>
-            <Grid container item xs={12} md={6} justify="center" id={styles.SongSearch}>
-              <TextField
-                placeholder="Search your favorite song here..."
-                name="songSearch"
-                type="search"
-                fullWidth
-                color="primary"
-                variant='outlined'
-                value={this.state.searchQuery}
-                onChange={event => this.searchHandler(event.target.value)}
-              />
-            </Grid>
-            <Grid item md={3}></Grid>
-          </Grid>
-
-          <Grid item container xs={12}>
-            <Grid item md={3}></Grid>
-            <Grid item md={6}>
-              {content}
-            </Grid>
-            <Grid item md={3}></Grid>
-          </Grid>
+          {content}
 
           {/* pagination buttons */}
           <Grid item container xs={12}>
@@ -166,11 +120,11 @@ class App extends Component {
             <Grid container item xs={12} md={4} justify="center" className={styles.BtnGroup}>
               {prevBtn}
               {
-                this.state.allSongs && this.state.allSongs.length && !this.state.searchQuery > 0 
-                ?
-                <Button onClick={this.songNextPageHandler} color="secondary" variant="contained" >Next </Button>
-                :
-                null
+                this.state.allSongs && this.state.showAllSongs && this.state.allSongs.length && !this.state.searchQuery > 0
+                  ?
+                  <Button onClick={this.songNextPageHandler} color="secondary" variant="contained" >Next </Button>
+                  :
+                  null
               }
             </Grid>
             <Grid item md={4}></Grid>
