@@ -24,7 +24,6 @@ class PlaylistDetail extends Component {
         let updatedSongIds = updatedPlaylist.songIds.sort();
         let oldSongIds = this.state.songs.map(s => s.id).sort();
         if ((JSON.stringify(updatedSongIds) !== JSON.stringify(oldSongIds)) && !this.state.addSongsUi){
-            debugger
             let updatedSongsList = this.state.songs.filter(s => updatedSongIds.includes(s.id));
             this.setState({songs: updatedSongsList})
         }

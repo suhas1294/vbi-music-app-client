@@ -18,7 +18,6 @@ class SongCard extends Component {
     }
 
     render() {
-        // debugger
         return (
             <Grid xs={12} item container justify="space-between" alignItems='center' id={styles.SongCard} >
                 <Grid xs={2} container item>

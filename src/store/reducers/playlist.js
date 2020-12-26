@@ -3,20 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const initialState = {
     currentPlaylistIdShown: null,
-    myPlaylist: [
-        // {
-        //     id: "d807a6ee-59eb-4a01-85ae-5d7afb097802",
-        //     playlistName: "playlist-1",
-        //     songIds: [1,2,3,4],
-        //     createdAt: new Date().toISOString()
-        // },
-        // {
-        //     id: "31cba839-0b59-4a4f-a6e3-e2e9f273d1b1",
-        //     playlistName: "playlist-2",
-        //     songIds: [6,7,8,9],
-        //     createdAt: new Date().toISOString()
-        // }
-    ]
+    myPlaylist: []
 };
 
 const playlistReducer = ( state=initialState, action ) => {
@@ -48,7 +35,6 @@ const addSongToPlaylist = (state, details) => {
     if(!details.pid){
         return addSongToNewPlaylist(state, details)
     }
-    debugger
     let playlistToBeEdited = state.myPlaylist.filter(pl => pl.id == details.pid)[0];
     let updatedPlaylistSongs = [...playlistToBeEdited.songIds, details.songId];
     playlistToBeEdited.songIds = [...new Set(updatedPlaylistSongs)];
@@ -101,7 +87,6 @@ const clearCurrentShownPlaylist = (state) => {
 }
 
 const savePlaylist = (state, newName) => {
-    debugger
     let playlistObjToBeEdited = state.myPlaylist.filter(pl => pl.id == state.currentPlaylistIdShown)[0];
     playlistObjToBeEdited.playlistName = newName;
     let playlistArray = state.myPlaylist.filter(obj => obj.id != state.currentPlaylistIdShown);
