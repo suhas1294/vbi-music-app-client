@@ -92,7 +92,7 @@ class App extends Component {
         <Grid container item xs={12} lg={12} id={styles.AppHeader} justify="center" alignItems="center" >
           <Grid justify="center" container item lg={2}></Grid>
           <Grid justify="flex-start" container item xs={12} lg={3}>
-            <img id={styles.AppLogo} src={AppLogo} />
+            <img id={styles.AppLogo} src={AppLogo} alt="app-logo"/>
           </Grid>
           <Grid justify="center" container item xs={12} lg={5}>
             <Typography id={styles.AppName} variant='h2'>VBI Music</Typography>

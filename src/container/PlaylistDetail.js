@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styles from './Playlist.module.css';
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import SongList from './../components/SongList';
 import Cockpit from './Cockpit';
 import { getSongDetailsWithAlbum, getSongsBySearch, shuffle } from './../utils/DataHelper';
@@ -32,7 +32,7 @@ class PlaylistDetail extends Component {
     addSongHandler = () => {
         getSongDetailsWithAlbum(1, Number.MAX_SAFE_INTEGER)
             .then(songs => {
-                let currentPlaylist = this.props.myPlaylist.filter(pl => pl.id == this.props.currentPlaylistShown)[0];
+                let currentPlaylist = this.props.myPlaylist.filter(pl => pl.id === this.props.currentPlaylistShown)[0];
                 let minusExisting = songs.filter(song => !currentPlaylist.songIds.includes(song.id))
                 minusExisting = minusExisting.slice(1, 15);
                 return minusExisting;

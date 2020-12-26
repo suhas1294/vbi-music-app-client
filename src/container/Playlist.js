@@ -17,7 +17,7 @@ class Playlist extends Component {
     }
 
     playlistClickHandler = (pid) => {
-        let currentPlaylist = this.props.playlist.filter(pl => pl.id == pid)[0];
+        let currentPlaylist = this.props.playlist.filter(pl => pl.id === pid)[0];
         if (!currentPlaylist){
             this.setState({showPlaylistIndex: true, showPlaylistDetail: null});
         }else{
@@ -43,7 +43,9 @@ class Playlist extends Component {
     }
 
     componentDidUpdate(prevProp) {
-        if (prevProp.playlist != this.props.playlist && this.props.currentPlaylistDetailShown) {
+        let oldPlaylist = JSON.stringify(prevProp.playlist);
+        let newPlaylist = JSON.stringify(this.props.playlist);
+        if (oldPlaylist !== newPlaylist && this.props.currentPlaylistDetailShown) {
             this.playlistClickHandler(this.props.currentPlaylistDetailShown);
         }
     }
