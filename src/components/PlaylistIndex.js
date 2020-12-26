@@ -6,7 +6,7 @@ const PlaylistIndex = (props) => {
     return (
         <React.Fragment>
             <Grid item md={3}></Grid>
-            <Grid container item xs={12} md={6} direction='column'>
+            <Grid container style={{minHeight: '30rem'}} item xs={12} md={6} direction='column'>
                 {
                     props.playlistArr.map(playlist => {
                         return (

@@ -26,20 +26,14 @@ class SongCard extends Component {
                     <img src='https://picsum.photos/200' alt="song_img" style={{height: '7rem', width: 'auto'}} />
                 </Grid>
                 <Grid container item xs={7} direction="column">
-                    <Typography
-                        variant='subtitle1'>
-                        Title: {this.props.title}
-                    </Typography>
-                    <Typography
-                        variant='subtitle1'>
-                        singer: {this.props.singers}
-                    </Typography>
+                    <p className={styles.SongTitle}>{this.props.title}</p>
+                    <p className={styles.Singers}>singers: {this.props.singers}</p>
                     <Typography
                         variant='subtitle1'>
                         album: {this.props.albumName}
                     </Typography>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item container xs={3} direction="column" alignItems='center'>
                     <Grid item >
                         <Typography
                             variant='subtitle1'>

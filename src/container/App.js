@@ -77,7 +77,6 @@ class App extends Component {
         playlistMode={false}
         addBtnRequired={false} />
     }
-    // if (!this.state.showAllSongs) content = <Playlist playlistIndex />;
     if (!this.state.showAllSongs) {
       content = <Playlist data={this.state.allSongs} playlistIndex />
     }
@@ -87,7 +86,7 @@ class App extends Component {
       prevBtn = <Button color="primary" variant="contained" onClick={this.songPrevPageHandler} >Previous </Button>
     }
     return (
-      <Grid container direction='column' alignItems='center' >
+      <Grid container direction='column' alignItems='center' className={styles.AppContainer}>
 
         {/* header region containing logo and app header */}
         <Grid container item xs={12} lg={12} id={styles.AppHeader} justify="center" alignItems="center" >

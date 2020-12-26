@@ -4,3 +4,13 @@
     box-shadow: 3px 3px 8px #c8cbcf;
     background: #f5fff8;
 }
+.SongTitle{
+    font-size: 1.2rem;
+    text-transform: capitalize;
+    color: #0066ff;
+}
+
+.Singers{
+    padding: 0.5rem 0;
+    font-style: italic;
+}

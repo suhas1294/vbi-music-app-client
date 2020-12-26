@@ -6,12 +6,9 @@ const PlaylistCard = (props) => {
     return (
         <Grid item xs={12} container id={styles.PlaylistCard} justify="center">
             <Grid item xs={9}>
-                <Typography
-                    className={styles.PlaylistTitle}
-                    onClick={() => props.showDetails(props.pid)}
-                    variant='subtitle1'>
+                <p className={styles.PlaylistTitle} onClick={() => props.showDetails(props.pid)}>
                     {props.name}
-                </Typography>
+                </p>
             </Grid>
             <Grid item xs={3}>
                 <Typography

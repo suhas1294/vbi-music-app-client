@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Hanalei+Fill&display=swap');
+
 #AppHeader{
     background: #f5f8fc;
     padding: 0.5rem;
@@ -21,4 +23,15 @@
 
 .BtnGroup > button {
     margin-right: 1rem;
+}
+
+#AppName{
+    font-family: 'Hanalei Fill', cursive;
+}
+
+.AppContainer{
+}
+
+#AppContainer img{
+    opacity: 0.5;
 }

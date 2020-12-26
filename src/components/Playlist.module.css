@@ -6,4 +6,8 @@
 
 .PlaylistTitle{
     cursor: pointer;
+    font-size: 1.2rem;
+    text-transform: capitalize;
+    font-style: italic;
+    font-weight: bold;
 }

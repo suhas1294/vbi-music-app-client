@@ -61,7 +61,7 @@ class PlaylistDetail extends Component {
         let content = (
             <Grid container item md={12}>
                 <Grid item md={3}></Grid>
-                <Grid item md={6}>
+                <Grid item xs={12} md={6}>
                     <SongList songs={this.state.songs} playlistMode />
                 </Grid>
                 <Grid item md={3}></Grid>
@@ -80,12 +80,15 @@ class PlaylistDetail extends Component {
             <React.Fragment>
                 <Grid item container xs={12} alignItems="baseline" style={{ margin: '1rem 0' }}>
                     <Grid item md={3}></Grid>
-                    <Grid item md={6} container>
+                    <Grid item xs={12} md={6} container>
                         <Grid item md={7}>
-                            <Typography
+                            <p id={styles.PlaylistTitle}>
+                                Playlist Name: <span> {this.props.showPlaylistDetail.playlistName} </span>
+                            </p>
+                            {/* <Typography
                                 variant='subtitle1'>
                                 {this.props.showPlaylistDetail.playlistName}
-                            </Typography>
+                            </Typography> */}
                         </Grid>
                         <Grid md={5} item container className={styles.BtnSpacing}>
                             <Button color="primary" onClick={this.shuffleHandler} variant="contained">Shuffle</Button>
