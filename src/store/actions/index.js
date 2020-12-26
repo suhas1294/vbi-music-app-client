@@ -2,5 +2,8 @@ export {
     addSongToPlaylist,
     removeFromPlaylist,
     editPlayistTitle,
-    setCurrentPlaylistShown
+    setCurrentPlaylistShown,
+    savePlaylist,
+    loadPlaylist,
+    clearCurrentShownPlaylist
  } from './playlist';

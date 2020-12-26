@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import styles from './App.module.css';
 import { Grid, Typography, Button } from '@material-ui/core';
 import AppLogo from './../static/images/app_logo.png';
-import axios from 'axios';
 import Spinner from './../components/Spinner';
 import Playlist from './Playlist';
 import Cockpit from './Cockpit';
 import { getSongDetailsWithAlbum } from './../utils/DataHelper';
+import { connect } from 'react-redux';
+import * as actions from './../store/actions/index';
 
 // const Playlist = React.lazy(() => import('./Playlist'));
 
@@ -57,6 +58,7 @@ class App extends Component {
   }
 
   playlistClickHandler = () => {
+    this.props.clearCurrentShown();
     this.setState({ showAllSongs: false })
   }
 
@@ -75,9 +77,9 @@ class App extends Component {
         playlistMode={false}
         addBtnRequired={false} />
     }
-    if (!this.state.showAllSongs) content = <Playlist />;
+    // if (!this.state.showAllSongs) content = <Playlist playlistIndex />;
     if (!this.state.showAllSongs) {
-      content = <Playlist data={this.state.allSongs} />
+      content = <Playlist data={this.state.allSongs} playlistIndex />
     }
 
     let prevBtn = null;
@@ -136,4 +138,9 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = dispatch => {
+  return {
+      clearCurrentShown: (newName) => dispatch(actions.clearCurrentShownPlaylist(newName))
+  }
+}
+export default connect(null, mapDispatchToProps)(App);

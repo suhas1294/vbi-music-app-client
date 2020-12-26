@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import styles from './Playlist.module.css';
 
 const PlaylistCard = (props) => {

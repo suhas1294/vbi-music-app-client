@@ -3,7 +3,7 @@ import styles from './Playlist.module.css';
 import { Grid, Typography, Button } from '@material-ui/core';
 import SongList from './../components/SongList';
 import Cockpit from './Cockpit';
-import { getSongDetailsWithAlbum, getSongsBySearch } from './../utils/DataHelper';
+import { getSongDetailsWithAlbum, getSongsBySearch, shuffle } from './../utils/DataHelper';
 import { connect } from 'react-redux';
 
 class PlaylistDetail extends Component {
@@ -11,7 +11,23 @@ class PlaylistDetail extends Component {
     state = {
         addSongsUi: false,
         songsToAdd: [],
-        searchQuery: ""
+        searchQuery: "",
+        songs: []
+    }
+
+    componentDidMount(){
+        this.setState({songs: this.props.songs});
+    }
+    
+    componentDidUpdate(){
+        let updatedPlaylist = this.props.myPlaylist.filter(pl => pl.id === this.props.currentPlaylistShown)[0];
+        let updatedSongIds = updatedPlaylist.songIds.sort();
+        let oldSongIds = this.state.songs.map(s => s.id).sort();
+        if ((JSON.stringify(updatedSongIds) !== JSON.stringify(oldSongIds)) && !this.state.addSongsUi){
+            debugger
+            let updatedSongsList = this.state.songs.filter(s => updatedSongIds.includes(s.id));
+            this.setState({songs: updatedSongsList})
+        }
     }
 
     addSongHandler = () => {
@@ -37,12 +53,17 @@ class PlaylistDetail extends Component {
             .catch(err => console.error(err));
     }
 
+    shuffleHandler = () => {
+        let shuffledSongs = shuffle(this.state.songs);
+        this.setState({songs: shuffledSongs});
+    }
+
     render() {
         let content = (
             <Grid container item md={12}>
                 <Grid item md={3}></Grid>
                 <Grid item md={6}>
-                    <SongList songs={this.props.songs} playlistMode />
+                    <SongList songs={this.state.songs} playlistMode />
                 </Grid>
                 <Grid item md={3}></Grid>
             </Grid>
@@ -68,7 +89,7 @@ class PlaylistDetail extends Component {
                             </Typography>
                         </Grid>
                         <Grid md={5} item container className={styles.BtnSpacing}>
-                            <Button color="primary" variant="contained">Shuffle</Button>
+                            <Button color="primary" onClick={this.shuffleHandler} variant="contained">Shuffle</Button>
                             <Button color="secondary" onClick={this.addSongHandler} variant="contained">Add Songs</Button>
                         </Grid>
                     </Grid>

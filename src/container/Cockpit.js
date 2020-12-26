@@ -25,9 +25,9 @@ class Cockpit extends Component {
                     <Grid item md={3}></Grid>
                 </Grid>
 
-                <Grid item container xs={12}>
+                <Grid item container xs={12} >
                     <Grid item md={3}></Grid>
-                    <Grid item md={6}>
+                    <Grid item xs={12} md={6} style={{height: '30rem', overflowY: 'scroll'}}>
                         <SongList 
                             songs={this.props.songs} 
                             playlistMode={this.props.playlistMode}

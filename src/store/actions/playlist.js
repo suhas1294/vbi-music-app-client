@@ -27,3 +27,22 @@ export const setCurrentPlaylistShown = (playlistId) => {
         playlistId: playlistId
     }
 }
+
+export const savePlaylist = (playlistName) => {
+    return{
+        type: actionType.SAVE_PLAYLIST,
+        playlistName: playlistName
+    }
+}
+
+export const loadPlaylist = () => {
+    return{
+        type: actionType.LOAD_PLAYLIST
+    }
+}
+
+export const clearCurrentShownPlaylist = () => {
+    return{
+        type: actionType.CLEAR_CURRENT_SHOWN_PLAYLIST
+    }
+}

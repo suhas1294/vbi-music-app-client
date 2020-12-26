@@ -1,20 +1,21 @@
 import * as actionType from './../actions/actionTypes';
+import { v4 as uuidv4 } from 'uuid';
 
 const initialState = {
     currentPlaylistIdShown: null,
     myPlaylist: [
-        {
-            id: 1,
-            playlistName: "playlist-1",
-            songIds: [1,2,3,4],
-            createdAt: new Date().toISOString()
-        },
-        {
-            id: 2,
-            playlistName: "playlist-2",
-            songIds: [6,7,8,9],
-            createdAt: new Date().toISOString()
-        }
+        // {
+        //     id: "d807a6ee-59eb-4a01-85ae-5d7afb097802",
+        //     playlistName: "playlist-1",
+        //     songIds: [1,2,3,4],
+        //     createdAt: new Date().toISOString()
+        // },
+        // {
+        //     id: "31cba839-0b59-4a4f-a6e3-e2e9f273d1b1",
+        //     playlistName: "playlist-2",
+        //     songIds: [6,7,8,9],
+        //     createdAt: new Date().toISOString()
+        // }
     ]
 };
 
@@ -23,18 +24,41 @@ const playlistReducer = ( state=initialState, action ) => {
         case actionType.ADD_TO_PLAYLIST: return addSongToPlaylist(state, action.details);
         case actionType.REMOVE_FROM_PLAYLIST: return removeSongFromPlaylist(state, action.details);
         case actionType.SET_CURRENT_PLAYLIST_SHOWN: return setCurrentPlaylistIdShown(state, action.playlistId);
+        case actionType.SAVE_PLAYLIST: return savePlaylist(state, action.playlistName);
+        case actionType.LOAD_PLAYLIST: return loadPlaylist(state);
+        case actionType.CLEAR_CURRENT_SHOWN_PLAYLIST: return clearCurrentShownPlaylist(state);
         default: return state;
     }
 };
 
+const addSongToNewPlaylist = (state, details) => {
+    let generatedId = uuidv4();
+    let tempPlaylist = {
+        id: generatedId,
+        playlistName: 'unsaved',
+        songIds: [details.songId],
+        createdAt: new Date().toLocaleString()
+    }
+    let updatedArr = state.myPlaylist ? [...state.myPlaylist] : [];
+    updatedArr.push(tempPlaylist);
+    return {...state, myPlaylist: updatedArr, currentPlaylistIdShown: generatedId };
+}
+
 const addSongToPlaylist = (state, details) => {
+    if(!details.pid){
+        return addSongToNewPlaylist(state, details)
+    }
+    debugger
     let playlistToBeEdited = state.myPlaylist.filter(pl => pl.id == details.pid)[0];
     let updatedPlaylistSongs = [...playlistToBeEdited.songIds, details.songId];
-    playlistToBeEdited.songIds = updatedPlaylistSongs;
+    playlistToBeEdited.songIds = [...new Set(updatedPlaylistSongs)];
     let playlistArr = state.myPlaylist.filter(pl => pl.id != details.pid);
     playlistArr.push(playlistToBeEdited);
+    // playlistArr = playlistArr.filter(pl => !pl.playlistName.includes('unsaved'));
     if(playlistToBeEdited){
-        return {...state, myPlaylist: playlistArr}
+        let newState = {...state, myPlaylist: playlistArr};
+        localStorage.setItem('playlist', JSON.stringify(playlistArr));
+        return newState;
     }else{
         return state;
     }
@@ -45,9 +69,14 @@ const removeSongFromPlaylist = (state, details) => {
     let toBeRemovedSongIndex = playlistObjToBeEdited.songIds.indexOf(details.songId);
     playlistObjToBeEdited.songIds.splice(toBeRemovedSongIndex, 1);
     let playlistArray = state.myPlaylist.filter(obj => obj.id != details.pid);
-    playlistArray.push(playlistObjToBeEdited);
+    // delete playlist if all songs are removed in it.
+    if(playlistObjToBeEdited.songIds.length !== 0 ){
+        playlistArray.push(playlistObjToBeEdited);
+    }
     if(playlistArray){
-        return {...state, myPlaylist: [...playlistArray]}
+        let newState = {...state, myPlaylist: [...playlistArray]};
+        localStorage.setItem('playlist', JSON.stringify(playlistArray));
+        return newState;
     }else{
         return state;
     }
@@ -57,6 +86,32 @@ const setCurrentPlaylistIdShown = (state, pid) => {
     return {
         ...state,
         currentPlaylistIdShown: pid
+    }
+}
+
+const loadPlaylist = (state) => {
+    const playlist = JSON.parse(localStorage.getItem('playlist'));
+    let removeUnsavedPlaylist = playlist.filter(pl => !pl.playlistName.includes('unsaved'));
+    localStorage.setItem('playlist', JSON.stringify(removeUnsavedPlaylist));
+    return {...state, myPlaylist: playlist}
+}
+
+const clearCurrentShownPlaylist = (state) => {
+    return {...state, currentPlaylistIdShown: null}
+}
+
+const savePlaylist = (state, newName) => {
+    debugger
+    let playlistObjToBeEdited = state.myPlaylist.filter(pl => pl.id == state.currentPlaylistIdShown)[0];
+    playlistObjToBeEdited.playlistName = newName;
+    let playlistArray = state.myPlaylist.filter(obj => obj.id != state.currentPlaylistIdShown);
+    playlistArray.push(playlistObjToBeEdited);
+    if(playlistArray){
+        let newState = {...state, myPlaylist: [...playlistArray], currentPlaylistIdShown: null};
+        localStorage.setItem('playlist', JSON.stringify([...playlistArray]));
+        return newState;
+    }else{
+        return state;
     }
 }
 

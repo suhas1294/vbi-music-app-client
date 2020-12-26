@@ -12,7 +12,9 @@ const SongList = (props) => {
                     albumName={song.albumName}
                     duration={song.duration}
                     playlistMode={props.playlistMode}
-                    addBtnRequired={props.addBtnRequired} />);
+                    addBtnRequired={props.addBtnRequired}
+                    imgLarge={song.url}
+                    imgThumb={song.thumbnailUrl} />);
         });
     }else{
         return (<h1>Loading...</h1>);

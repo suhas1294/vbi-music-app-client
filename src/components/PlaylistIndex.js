@@ -1,12 +1,12 @@
 import React from 'react';
 import PlaylistCard from './PlaylistCard';
-import { Grid, Typography, TextField, Button } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 const PlaylistIndex = (props) => {
     return (
         <React.Fragment>
             <Grid item md={3}></Grid>
-            <Grid container item xs={12} md={6} direction='column' style={{ border: '2px solid red' }}>
+            <Grid container item xs={12} md={6} direction='column'>
                 {
                     props.playlistArr.map(playlist => {
                         return (
@@ -22,9 +22,6 @@ const PlaylistIndex = (props) => {
             </Grid>
             <Grid item md={3}></Grid>
         </React.Fragment>
-
-
-
     )
 }
 
